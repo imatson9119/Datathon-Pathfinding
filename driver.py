@@ -30,3 +30,4 @@ contour, hier = cv2.findContours(collision_map, cv2.RETR_CCOMP, cv2.CHAIN_APPROX
 for cnt in contour:
     cv2.drawContours(collision_map, [cnt], 0, 255, -1)
 display_img(collision_map, title="Collision Map")
+print(collision_map)
