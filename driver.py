@@ -1,4 +1,5 @@
 from walmartFunctions import *
+from compress import *
 import cv2
 # Hyper parameters
 
@@ -13,6 +14,9 @@ circle_draw_size = 20 # Radius of targets to draw on goal image
 
 im_gray = cv2.imread('1150.png', cv2.IMREAD_GRAYSCALE)
 display_img(im_gray)
+
+#im_gray = compressImage(im_gray,2)
+#display_img(im_gray)
 
 thresh, im_bw = cv2.threshold(im_gray, 254, 255, cv2.THRESH_BINARY_INV)
 display_img(im_bw, title="Store Map Collision")

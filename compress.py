@@ -1,4 +1,5 @@
 import numpy as np
+import cv2
 
 def compressImage(img, factor):
     width = int(img.shape[1]/factor)
