@@ -31,3 +31,37 @@ for cnt in contour:
     cv2.drawContours(collision_map, [cnt], 0, 255, -1)
 display_img(collision_map, title="Collision Map")
 print(collision_map)
+
+# Targets
+valid_targets = cv2.Laplacian(collision_map, cv2.CV_64F)
+display_img(valid_targets, title="Possible Targets Map")
+
+random.seed(target_seed)
+im_targets = im_gray.copy()
+ys, xs = valid_targets.nonzero()
+target_indicies = random.sample(range(len(xs)), N_targets)
+target_xs, target_ys = xs[target_indicies], ys[target_indicies]
+for x, y in zip(target_xs, target_ys):
+    cv2.circle(im_targets, (x, y), circle_draw_size, (0, 255, 0), -1)
+display_img(im_targets)
+
+
+# Add traffic map
+width, height = len(im_targets[0]), len(im_targets)
+noise_img = generate_noise_image(width, height, seed=noise_seed)
+noise_img = (noise_img - np.min(noise_img)) / (np.max(noise_img) - np.min(noise_img))
+
+travel_friction = (~collision_map>0).astype(int) * noise_img
+travel_friction[collision_map>0] = np.inf
+for x, y in zip(target_xs, target_ys):
+    travel_friction[y][x] = 0
+
+display_img(travel_friction*255)
+print(travel_friction)
+lines = []
+for i in travel_friction:
+    lines.append(max(i))
+    if np.inf in i:
+        print("Found infinity")
+print(max(i))
+#print(lines)
