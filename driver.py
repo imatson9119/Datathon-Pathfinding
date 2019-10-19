@@ -19,8 +19,11 @@ display_img(im_bw, title="Store Map Collision")
 
 #Make contour map
 
-'''collision_map = im_bw.copy()
-contour, hier = cv2.findContours(collision_map, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+print(im_bw.shape)
+
+collision_map = im_bw.copy()
+contour = cv2.findContours(collision_map, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
+print(contour)
 for cnt in contour:
     cv2.drawContours(collision_map, [cnt], 0, 255, -1)
-display_img(collision_map, title="Collision Map")'''
+display_img(collision_map, title="Collision Map")
