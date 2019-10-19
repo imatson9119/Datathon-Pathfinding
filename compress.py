@@ -1,6 +1,9 @@
 import numpy as np
 
 def compressImage(img, factor):
-    imgCompressed
+    width = int(img.shape[1]/factor)
+    height = int(img.shape[0]/factor)
+    dims = (width, height)
+    imgCompressed = cv2.resize(img, dims, interpolation = cv2.INTER_AREA)
 
     return imgCompressed
