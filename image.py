@@ -9,6 +9,8 @@ def makeRed(img):
 
 def colorPath(img, path):
     c = img.copy()
-    for pair in path:
+    for p in path:
+        pair = p[0]
         c[pair[1]][pair[0]][0] = 0
         c[pair[1]][pair[0]][1] = 255
+    return c

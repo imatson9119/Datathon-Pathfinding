@@ -1,5 +1,6 @@
 from walmartFunctions import *
 from compress import *
+from image import *
 import cv2
 import astar
 import approximateCost
@@ -84,12 +85,17 @@ for i in range(len(order)):
 
 megaPath = []
 totalCost = 0
-for i in range(5):
+for i in range(3):
     start = (target_xs[order[i]], target_ys[order[i]])
     end = (target_xs[order[i+1]], target_ys[order[i+1]])
     path, cost = astar.astar(travel_friction, start, end)
     megaPath += path
     totalCost = cost
+print(megaPath)
+red = makeRed(travel_friction)
+display_img(red)
+drawn = colorPath(red,megaPath)
+display_img(drawn)
 
 print(totalCost)
 
