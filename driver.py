@@ -3,6 +3,7 @@ from compress import *
 import cv2
 import astar
 import approximateCost
+import TravelingSalesman as tsp
 # Hyper parameters
 
 image_map_source_filename = '1150.png' # The store map file location
@@ -58,7 +59,7 @@ travel_friction[collision_map>0] = np.inf
 for x, y in zip(target_xs, target_ys):
     travel_friction[y][x] = 0
 
-display_img(travel_friction*255)
+# display_img(travel_friction*255)
 print(travel_friction)
 lines = []
 for i in travel_friction:
@@ -69,4 +70,28 @@ print(max(i))
 print(target_xs)
 print(target_ys)
 
-approximateCost.approx_distances(travel_friction, target_xs, target_ys)
+nodes = approximateCost.approx_distances(travel_friction, target_xs, target_ys)
+points = []
+print("_________")
+for i in range(len(target_xs)):
+    points += [(target_xs[i], target_ys[i])]
+print(points)
+order, distance = tsp.greedyTravelingWithSwaps(nodes, 0)
+tsp.plotTSP([order], points)
+
+for i in range(len(order)):
+    print(target_xs[order[i]], target_ys[order[i]])
+
+megaPath = []
+totalCost = 0
+for i in range(5):
+    start = (target_xs[order[i]], target_ys[order[i]])
+    end = (target_xs[order[i+1]], target_ys[order[i+1]])
+    path, cost = astar.astar(travel_friction, start, end)
+    megaPath += path
+    totalCost = cost
+
+print(totalCost)
+
+
+

@@ -47,9 +47,9 @@ def astar(maze, start, end):
         # Pop current off open list, add to closed list
         open_list.pop(current_index)
         #closed_list.append(current_node)
-        print(num_it, current_node.position, current_node.on_list, current_node.g)
-        current_node.on_list = True
-        #closedDict[current_node.position] = 0
+        #print(num_it, current_node.position, current_node.on_list, current_node.g)
+        #current_node.on_list = True
+        closedDict[current_node.position] = 0
         # print(current_node.h)
         # Found the goal
         #print('open list:', [i.position for i in open_list])
@@ -97,16 +97,16 @@ def astar(maze, start, end):
             if cont:
                 continue'''
 
-            if child.on_list:
+            #if child.on_list:
+             #   continue
+
+            if child.position in closedDict.keys():
                 continue
 
-            #if child.position in closedDict.keys():
-            #    continue
-
             # Create the f, g, and h values
-            child.g = current_node.g + child.cost
+            child.g = current_node.g +1# child.cost
             child.h = (((child.position[0] - end_node.position[0]))**2 + (
-                        (child.position[1] - end_node.position[1]))**2) * (current_node.cost)
+                        (child.position[1] - end_node.position[1]))**2)
             child.f = child.g + child.h
 
             # Child is already in the open list
