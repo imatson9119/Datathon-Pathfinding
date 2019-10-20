@@ -101,10 +101,13 @@ for i in range(len(order)):
 
 megaPath = []
 totalCost = 0
+print(target_xs)
+print(target_ys)
 for i in range(len(target_xs) - 1):
     print(i)
     start = (target_ys[order[i]], target_xs[order[i]])
     end = (target_ys[order[i+1]], target_xs[order[i+1]])
+    #print("\n!_!_!_!_!_!")
     path, cost = astar.astar(travel_friction, start, end)
     megaPath += path
     totalCost = cost

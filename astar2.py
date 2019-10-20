@@ -1,6 +1,8 @@
 import numpy as np
-from time import sleep
+import time
 from heapq import *
+import sys
+
 class Node():
     """A node class for A* Pathfinding"""
 
@@ -35,10 +37,14 @@ def astar(maze, start, end):
     # Add the start node
     heappush(open_list,start_node)
     # Loop until you find the end
+    startTime = time.time()
     while open_list:
         #sleep(0.2)
         # Get the current node
         current_node = heappop(open_list)
+
+        if time.time() - startTime > 4:
+            return stupidSearch(maze, start, end)
 
         # Pop current off open list, add to closed list
         #closed_list.append(current_node)
@@ -62,7 +68,7 @@ def astar(maze, start, end):
 
         # Generate children
         children = []
-        for new_position in [(0, -1), (0, 1), (-1, 0), (1, 0)]:  # Adjacent squares
+        for new_position in [(0, -1, 1), (0, 1, 1), (-1, 0, 1), (1, 0, 1)]:  # Adjacent squares
             # Get node position
             node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
@@ -81,6 +87,8 @@ def astar(maze, start, end):
 
             # Append
             children.append(new_node)
+        # END CHILDREN GENERATION
+
         # Loop through children
         for child in children:
             cont = False
@@ -102,7 +110,7 @@ def astar(maze, start, end):
             child.g = current_node.g + child.cost
             child.h = (((child.position[0] - end_node.position[0]))**2 + (
                         (child.position[1] - end_node.position[1]))**2)
-            child.f = child.g + child.h
+            child.f = child.g + 100 * child.h
 
             # Child is already in the open list
             for open_node in open_list:
@@ -115,6 +123,147 @@ def astar(maze, start, end):
             # Add the child to the open list
             heappush(open_list, child)
 
+def stupidSearch(maze, start, end):
+    sys.setrecursionlimit(10000)
+    #start = tuple(reversed(start))
+    #end = tuple(reversed(end))
+    x1 = start[1]
+    y1 = start[0]
+    x2 = end[1]
+    y2 = end[0]
+    print("GOTO")
+    print(start, end)
+    time.sleep(0.1)
+    path = []
+    cost = 0
+    while x1 != x2 or y1 != y2:
+        # Try to optimize y
+        dir = -1 # 0 = L, 1 = U, 2 = R, 3 = D
+        if y1 < y2:
+            x1,y1,x2,y2 = move_up(path, maze, (x1, y1), (x2, y2))
+        elif y1 > y2:
+            x1,y1,x2,y2 = move_down(path, maze, (x1,y1), (x2, y2))
+
+        if x1 < x2:
+            x1,y1,x2,y2 = move_right(path, maze, (x1, y1), (x2, y2))
+        elif x1 > x2:
+            x1,y1,x2,y2 = move_left(path, maze, (x1, y1), (x2, y2))
+    print("Stupid:", path)
+    return path, cost
+
+def move_up(path, maze, start, end, flag=""):
+    x1 = start[0]
+    y1 = start[1]
+    x2 = end[0]
+    y2 = end[1]
+    while y1 != y2 or flag != "":
+        if flag == "D":
+            if 0 <= y1 - 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1-1][x1] != np.inf:
+                return x1, y1, x2, y2
+        if flag == "L":
+            if 0 <= y1 < len(maze) and 0 <= x1 - 1 < len(maze[0]) and maze[y1][x1-1] != np.inf:
+                return x1,y1, x2,y2
+        if flag == "R":
+            if 0 <= y1 < len(maze) and 0 <= x1 + 1 < len(maze[0]) and maze[y1][x1 + 1] != np.inf:
+                return x1,y1,x2,y2
+
+        if not(0 <= y1 + 1 < len(maze) and 0 <= x1 < len(maze[0])) or maze[y1 + 1][x1] == np.inf:
+            if x1 < x2 and 0 <= y1 < len(maze) and 0 <= x1 + 1 < len(maze[0]) and maze[y1][x1+1] != np.inf:
+                x1, y1, x2, y2 = move_right(path, maze, (x1, y1), (x2, y2), "U")
+                print("After recursive call:", x1,y1,x2,y2)
+                #time.sleep(5)
+                continue
+            elif x1 >= x2 and maze[y1][x1-1] != np.inf:
+                x1, y1, x2, y2 = move_left(path, maze, (x1, y1), (x2, y2), "U")
+                continue
+        y1 += 1
+        print(x1, y1, "\t", x2, y2)
+        path.append([(x1, y1), maze[y1][x1]])
+    return x1,y1,x2,y2
+
+def move_down(path, maze, start, end, flag=""):
+    x1 = start[0]
+    y1 = start[1]
+    x2 = end[0]
+    y2 = end[1]
+    while y1 != y2 or flag != "":
+        if flag == "U":
+            if 0 <= y1 + 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1+1][x1] != np.inf:
+                return x1, y1, x2, y2
+        if flag == "L":
+            if 0 <= y1 < len(maze) and 0 <= x1-1 < len(maze[0]) and maze[y1][x1-1] != np.inf:
+                return x1,y1, x2,y2
+        if flag == "R":
+            if 0 <= y1 < len(maze) and 0 <= x1 + 1 < len(maze[0]) and maze[y1][x1 + 1] != np.inf:
+                return x1,y1,x2,y2
+
+        if not(0 <= y1 - 1 < len(maze) and 0 <= x1 < len(maze[0])) or maze[y1 - 1][x1] == np.inf:
+            if x1 < x2 and 0 <= y1 < len(maze) and 0 <= x1 + 1 < len(maze[0]) and maze[y1][x1 + 1] != np.inf:
+                x1, y1, x2, y2 = move_right(path, maze, (x1, y1), (x2, y2), "D")
+                continue
+            elif x1 >= x2 and 0 <= y1 < len(maze) and 0 <= x1 - 1 < len(maze[0]) and maze[y1][x1-1] != np.inf:
+                x1, y1, x2, y2 = move_left(path, maze, (x1, y1), (x2, y2), "D")
+                continue
+        y1 -= 1
+        print(x1, y1, "\t", x2, y2)
+        path.append([(x1, y1), maze[y1][x1]])
+    return x1,y1,x2,y2
+
+def move_left(path, maze, start, end, flag=""):
+    x1 = start[0]
+    y1 = start[1]
+    x2 = end[0]
+    y2 = end[1]
+    while x1 != x2 or flag != "":
+        if flag == "D":
+            if 0 <= y1 - 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1-1][x1] != np.inf:
+                return x1, y1, x2, y2
+        if flag == "U":
+            if 0 <= y1 + 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1 + 1][x1] != np.inf:
+                return x1,y1, x2,y2
+        if flag == "R":
+            if 0 <= y1 < len(maze) and 0 <= x1 + 1 < len(maze[0]) and maze[y1][x1 + 1] != np.inf:
+                return x1,y1,x2,y2
+
+        if not(0 <= y1 < len(maze) and 0 <= x1 - 1 < len(maze[0])) or maze[y1][x1 - 1] == np.inf:
+            if y1 < y2 and 0 <= y1 + 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1+1][x1] != np.inf:
+                x1, y1, x2, y2 = move_up(path, maze, (x1, y1), (x2, y2), "L")
+                continue
+            elif y1 >= y2 and 0 <= y1 - 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1 - 1][x1] != np.inf:
+                x1, y1, x2, y2 = move_down(path, maze, (x1, y1), (x2, y2), "L")
+                continue
+        x1 -= 1
+        print(x1,y1, "\t", x2,y2)
+        path.append([(x1, y1), maze[y1][x1]])
+    return x1,y1,x2,y2
+
+def move_right(path, maze, start, end, flag=""):
+    x1 = start[0]
+    y1 = start[1]
+    x2 = end[0]
+    y2 = end[1]
+    while x1 != x2 or flag != "":
+        if flag == "D":
+            if 0 <= y1 - 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1 - 1][x1] != np.inf:
+                return x1, y1, x2, y2
+        if flag == "U":
+            if 0 <= y1 + 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1 + 1][x1] != np.inf:
+                return x1, y1, x2, y2
+        if flag == "L":
+            if 0 <= y1 < len(maze) and 0 <= x1 - 1 < len(maze[0]) and maze[y1][x1 - 1] != np.inf:
+                return x1, y1, x2, y2
+
+        if not(0 <= y1 < len(maze) and 0 <= x1 + 1 < len(maze[0])) or maze[y1][x1 + 1] == np.inf:
+            if y1 < y2 and 0 <= y1 + 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1 + 1][x1] != np.inf:
+                x1, y1, x2, y2 = move_up(path, maze, (x1, y1), (x2, y2), "R")
+                continue
+            elif y1 >= y2 and 0 <= y1 - 1 < len(maze) and 0 <= x1 < len(maze[0]) and maze[y1-1][x1] != np.inf:
+                x1, y1, x2, y2 = move_down(path, maze, (x1, y1), (x2, y2), "R")
+                continue
+        x1 += 1
+        print(x1, y1, "\t", x2, y2)
+        path.append([(x1, y1), maze[y1][x1]])
+    return x1,y1,x2,y2
 
 def main():
     maze = [[0.0, 0.4, np.inf, 0.4, 0.4, 0.2],
