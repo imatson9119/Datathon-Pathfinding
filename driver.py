@@ -2,6 +2,7 @@ from walmartFunctions import *
 from compress import *
 import cv2
 import astar
+import approximateCost
 # Hyper parameters
 
 image_map_source_filename = '1150.png' # The store map file location
@@ -67,19 +68,5 @@ for i in travel_friction:
 print(max(i))
 print(target_xs)
 print(target_ys)
-#print(lines)
-for i in range(len(target_xs)):
-    x1 = target_xs[i]
-    y1 = target_ys[i]
-    print(i, len(target_xs))
-    for j in range(len(target_xs)):
-        print(i, j)
-        if i != j:
-            x2 = target_xs[j]
-            y2 = target_ys[j]
-            print()
-            print(travel_friction[y1][x1])
-            print(travel_friction[y2][x2])
-            path, cost = astar.astar(travel_friction, (y1,x1), (y2,x2))
-            print(path, cost)
-            print(i, j)
+
+approximateCost.approx_distances(travel_friction, target_xs, target_ys)
