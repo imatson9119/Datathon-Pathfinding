@@ -25,7 +25,7 @@ for i in range(len(target_points)):
 circle_draw_size = 5
 for x, y in zip(target_xs, target_ys):
     cv2.circle(disp_img, (x, y), circle_draw_size, (0, 0, 0), -1)
-# display_img(disp_img*255)
+display_img(disp_img*255)
 
 nodes = approximateCost.approx_distances(travel_friction, target_xs, target_ys)
 points = []
@@ -35,7 +35,7 @@ for i in range(len(target_xs)):
 print(points)
 
 # order, distance = tsp.greedyTravelingWithSwaps(nodes, 0)
-tsp.plotTSP([order], points)
+# tsp.plotTSP([order], points)
 sa = SimAnnealing.SimAnneal(points, stopping_iter=5000)
 sa.anneal()
 order = sa.best_solution
