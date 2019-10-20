@@ -1,5 +1,5 @@
 import numpy as np
-
+from time import sleep
 class Node():
     """A node class for A* Pathfinding"""
 
@@ -11,6 +11,7 @@ class Node():
         self.h = 0
         self.f = 0
         self.cost = cost
+        self.on_list = False
 
     def __eq__(self, other):
         return self.position == other.position
@@ -18,7 +19,6 @@ class Node():
 
 def astar(maze, start, end):
     """Returns a list of tuples as a path from the given start to the given end in the given maze"""
-
     # Create start and end node
     start_node = Node(None, start)
     start_node.g = start_node.h = start_node.f = 0
@@ -27,13 +27,14 @@ def astar(maze, start, end):
 
     # Initialize both open and closed list
     open_list = []
-    closed_list = []
+    closedDict = {}
 
     # Add the start node
     open_list.append(start_node)
     num_it = 0
     # Loop until you find the end
     while len(open_list) > 0:
+        #sleep(0.2)
         num_it+=1
         # Get the current node
         current_node = open_list[0]
@@ -45,13 +46,16 @@ def astar(maze, start, end):
 
         # Pop current off open list, add to closed list
         open_list.pop(current_index)
-        closed_list.append(current_node)
+        #closed_list.append(current_node)
+        print(num_it, current_node.position, current_node.on_list, current_node.g)
+        current_node.on_list = True
+        #closedDict[current_node.position] = 0
         # print(current_node.h)
         # Found the goal
         #print('open list:', [i.position for i in open_list])
         #print('closed list:',[i.position for i in closed_list])
         # print(current_node.position, '=', end_node.position)
-        if current_node.position == end_node.position or num_it > 30:
+        if current_node.position == end_node.position:
             end_cost = current_node.g
             path = []
             current = current_node
@@ -86,23 +90,30 @@ def astar(maze, start, end):
         for child in children:
             cont = False
             # Child is on the closed list
-            for closed_child in closed_list:
+            '''for closed_child in closed_list:
                 if child.position == closed_child.position:
                     cont = True
                     continue
             if cont:
+                continue'''
+
+            if child.on_list:
                 continue
+
+            #if child.position in closedDict.keys():
+            #    continue
 
             # Create the f, g, and h values
             child.g = current_node.g + child.cost
-            child.h = (((child.position[0] - end_node.position[0]) ** 2) + (
-                        (child.position[1] - end_node.position[1]) ** 2))**(1/2) * current_node.cost
+            child.h = (((child.position[0] - end_node.position[0]))**2 + (
+                        (child.position[1] - end_node.position[1]))**2) * (current_node.cost)
             child.f = child.g + child.h
 
             # Child is already in the open list
             for open_node in open_list:
                 if child == open_node and child.g > open_node.g:
                     cont = True
+
                     continue
             if cont:
                 continue
@@ -119,7 +130,7 @@ def main():
             [0.5, 0.6, 0.6, np.inf, 0.4, 0.0]]
 
     start = (0, 0)
-    end = (5, 5)
+    end = (1, 0)
 
     path = astar(maze, start, end)
     print(path)

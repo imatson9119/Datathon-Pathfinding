@@ -1,6 +1,7 @@
 from walmartFunctions import *
 from compress import *
 import cv2
+import astar
 # Hyper parameters
 
 image_map_source_filename = '1150.png' # The store map file location
@@ -13,13 +14,13 @@ circle_draw_size = 20 # Radius of targets to draw on goal image
 # Prepare map
 
 im_gray = cv2.imread('1150.png', cv2.IMREAD_GRAYSCALE)
-display_img(im_gray)
+#display_img(im_gray)
 
-#im_gray = compressImage(im_gray,2)
+#im_gray = compressImage(im_gray,4)
 #display_img(im_gray)
 
 thresh, im_bw = cv2.threshold(im_gray, 254, 255, cv2.THRESH_BINARY_INV)
-display_img(im_bw, title="Store Map Collision")
+#display_img(im_bw, title="Store Map Collision")
 
 #Make contour map
 
@@ -29,12 +30,12 @@ collision_map = im_bw.copy()
 contour, hier = cv2.findContours(collision_map, cv2.RETR_CCOMP, cv2.CHAIN_APPROX_SIMPLE)
 for cnt in contour:
     cv2.drawContours(collision_map, [cnt], 0, 255, -1)
-display_img(collision_map, title="Collision Map")
-print(collision_map)
+#display_img(collision_map, title="Collision Map")
+#print(collision_map)
 
 # Targets
 valid_targets = cv2.Laplacian(collision_map, cv2.CV_64F)
-display_img(valid_targets, title="Possible Targets Map")
+#display_img(valid_targets, title="Possible Targets Map")
 
 random.seed(target_seed)
 im_targets = im_gray.copy()
@@ -43,7 +44,7 @@ target_indicies = random.sample(range(len(xs)), N_targets)
 target_xs, target_ys = xs[target_indicies], ys[target_indicies]
 for x, y in zip(target_xs, target_ys):
     cv2.circle(im_targets, (x, y), circle_draw_size, (0, 255, 0), -1)
-display_img(im_targets)
+#display_img(im_targets)
 
 
 # Add traffic map
@@ -64,4 +65,21 @@ for i in travel_friction:
     if np.inf in i:
         print("Found infinity")
 print(max(i))
+print(target_xs)
+print(target_ys)
 #print(lines)
+for i in range(len(target_xs)):
+    x1 = target_xs[i]
+    y1 = target_ys[i]
+    print(i, len(target_xs))
+    for j in range(len(target_xs)):
+        print(i, j)
+        if i != j:
+            x2 = target_xs[j]
+            y2 = target_ys[j]
+            print()
+            print(travel_friction[y1][x1])
+            print(travel_friction[y2][x2])
+            path, cost = astar.astar(travel_friction, (y1,x1), (y2,x2))
+            print(path, cost)
+            print(i, j)
