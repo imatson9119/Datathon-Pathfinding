@@ -9,8 +9,9 @@ import helpme
 import SimAnnealing
 # Hyper parameters
 
-
+print("Input number of deals: ")
 n = int(input())
+print("Input seed:")
 s1 = int(input())
 travel_friction, target_points = get_traffic_map_and_targets(n, s1, s1, scale_factor=5)
 disp_img = travel_friction.copy()
