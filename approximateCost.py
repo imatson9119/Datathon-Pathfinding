@@ -28,8 +28,6 @@ def approx_distances(maze, target_x, target_y):
                 for k in range(15):
                     if(maze[y1][x1] != np.inf):
                         sample_points.append(maze[y1][x1])
-                    else:
-                        sample_points.append(penalty)
                     x1 += run
                     y1 += rise
                 if len(sample_points) >= 1:
