@@ -11,9 +11,12 @@ import SimAnnealing
 
 print("Input number of deals: ")
 n = int(input())
-print("Input seed:")
-s1 = int(input())
-travel_friction, target_points = get_traffic_map_and_targets(n, s1, s1, scale_factor=5)
+print("Input noise seed:")
+noise_seed = int(input())
+print("Input target seed:")
+target_seed = int(input())
+
+travel_friction, target_points = get_traffic_map_and_targets(n, noise_seed, target_seed, scale_factor=5)
 disp_img = travel_friction.copy()
 
 target_xs = []
@@ -25,14 +28,14 @@ for i in range(len(target_points)):
 circle_draw_size = 5
 for x, y in zip(target_xs, target_ys):
     cv2.circle(disp_img, (x, y), circle_draw_size, (0, 0, 0), -1)
-display_img(disp_img*255)
+#display_img(disp_img*255)
 
 nodes = approximateCost.approx_distances(travel_friction, target_xs, target_ys)
 points = []
-print("_________")
+#print("_________")
 for i in range(len(target_xs)):
     points += [(target_xs[i], target_ys[i])]
-print(points)
+#print(points)
 
 # order, distance = tsp.greedyTravelingWithSwaps(nodes, 0)
 # tsp.plotTSP([order], points)
@@ -40,16 +43,12 @@ sa = SimAnnealing.SimAnneal(points, stopping_iter=5000)
 sa.anneal()
 order = sa.best_solution
 
-
-for i in range(len(order)):
-    print(target_xs[order[i]], target_ys[order[i]])
-
 megaPath = []
 totalCost = 0
 print(target_xs)
 print(target_ys)
 for i in range(len(target_xs) - 1):
-    print(i)
+    print("Returning", i)
     start = (target_ys[order[i]], target_xs[order[i]])
     end = (target_ys[order[i+1]], target_xs[order[i+1]])
     #print("\n!_!_!_!_!_!")
@@ -65,8 +64,8 @@ display_img(drawn)
 print(totalCost)
 
 megaPath = [megaPath[i][0] for i in range(len(megaPath))]
-print(megaPath)
-print(evaluate_path(travel_friction, target_points, megaPath))
+#print(megaPath)
+print("Score:", evaluate_path(travel_friction, target_points, megaPath))
 
 
 
