@@ -32,7 +32,7 @@ def approx_distances(maze, target_x, target_y):
                     y1 += rise
                 if len(sample_points) >= 1:
                     average = sum(sample_points)/len(sample_points)
-                    adj[i].append((j, average * dist))
+                    adj[i].append((j, dist))
                 else:
                     adj[i].append((j, dist))
             else:
