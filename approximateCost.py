@@ -15,12 +15,26 @@ def approx_distances(maze, target_x, target_y):
             y2 = target_y[j]
 
             dist = ((x2 - x1)**2 + (y2 - y1)**2)**(1/2)
-            adj[i].append((j, dist))
-            if x2 - x1 != 0:
-                slope = (y2-y1)//(x2-x1)
+
+            sample_points = []
+            if x2 - x1 != 0 and (y2-y1 > 60 or x2-x1 > 60):
+                rise, run = (y2-y1)//15, (x2-x1)//15
+                x1 += run
+                y1 += run
+
+                for k in range(15):
+                    if(maze[y1][x1] != np.inf):
+                        sample_points.append(maze[y1][x1])
+                    x1 += run
+                    y1 += rise
+
+                if len(sample_points) >= 1:
+                    average = sum(sample_points)/len(sample_points)
+                    adj[i].append((j, average * dist))
+                else:
+                    adj[i].append((j, dist))
             else:
-                slope = np.inf
-            print(slope)
+                adj[i].append((j, dist))
 
     for key in adj.keys():
         print(key, adj[key])
