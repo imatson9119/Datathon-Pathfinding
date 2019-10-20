@@ -18,7 +18,11 @@ def approx_distances(maze, target_x, target_y):
             adj[i].append((j, dist))
             if x2 - x1 != 0:
                 slope = (y2-y1)//(x2-x1)
+            else:
+                slope = np.inf
             print(slope)
 
     for key in adj.keys():
         print(key, adj[key])
+
+    return adj
