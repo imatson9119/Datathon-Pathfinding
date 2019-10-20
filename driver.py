@@ -2,7 +2,7 @@ from walmartFunctions import *
 from compress import *
 from image import *
 import cv2
-import astar
+import astar2 as astar
 import approximateCost
 import TravelingSalesman as tsp
 # Hyper parameters
