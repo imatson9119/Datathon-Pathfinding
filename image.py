@@ -1,12 +1,14 @@
-import opencv
+import cv2
+import numpy as np
 
 def makeRed(img):
-    r = cv2.cvtColor(img.copy(), cv2.COLOR_GRAY2BGR)
-    r[:, :, 0] = 0
-    r[:, :, 1] = 0
+    r = np.stack((img,) * 3, axis=-1)
+    r[:, :, 1] = r[:, :, 1]-255
+    r[:, :, 2] = r[:, :, 2]-255
     return r
 
 def colorPath(img, path):
+    c = img.copy()
     for pair in path:
-        img[pair[1]][pair[0]][2] = 0
-        img[pair[1]][pair[0]][1] = 255
+        c[pair[1]][pair[0]][0] = 0
+        c[pair[1]][pair[0]][1] = 255
