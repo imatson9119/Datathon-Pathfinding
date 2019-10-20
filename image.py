@@ -11,6 +11,8 @@ def colorPath(img, path):
     c = img.copy()
     for p in path:
         pair = p[0]
-        c[pair[1]][pair[0]][0] = 0
-        c[pair[1]][pair[0]][1] = 255
+        for i in range(-2,3):
+            for j in range(-2,3):
+                c[pair[1]+i][pair[0]+j][0] = 0
+                c[pair[1]+i][pair[0]+j][1] = 255
     return c
