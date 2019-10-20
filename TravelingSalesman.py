@@ -68,7 +68,7 @@ def performSwaps(order, nodes, distance, points = None):
 
 def greedyTravelingWithSwaps(nodes, startingNode):
     order, distance = greedyTraveling(nodes, startingNode)
-    for i in range(5):
+    for i in range(10):
         order, distance = performSwaps(order, nodes, distance)
     return order, distance
 

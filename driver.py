@@ -7,7 +7,7 @@ import approximateCost
 import TravelingSalesman as tsp
 # Hyper parameters
 
-image_map_source_filename = '1150.png' # The store map file location
+'''image_map_source_filename = '1150.png' # The store map file location
 target_seed = 42 # For determining the random target locations
 noise_seed = 42 # For determining the random traffic noise locations
 
@@ -69,7 +69,23 @@ for i in travel_friction:
         print("Found infinity")
 print(max(i))
 print(target_xs)
-print(target_ys)
+print(target_ys)'''
+
+n = int(input())
+s1 = int(input())
+travel_friction, target_points = get_traffic_map_and_targets(n, s1, s1, scale_factor=5)
+disp_img = travel_friction.copy()
+
+target_xs = []
+target_ys = []
+for i in range(len(target_points)):
+    target_xs.append(target_points[i][0])
+    target_ys.append(target_points[i][1])
+
+circle_draw_size = 5
+for x, y in zip(target_xs, target_ys):
+    cv2.circle(disp_img, (x, y), circle_draw_size, (0, 0, 0), -1)
+display_img(disp_img*255)
 
 nodes = approximateCost.approx_distances(travel_friction, target_xs, target_ys)
 points = []
@@ -99,6 +115,10 @@ drawn = colorPath(red,megaPath)
 display_img(drawn)
 
 print(totalCost)
+
+megaPath = [megaPath[i][0] for i in range(len(megaPath))]
+print(megaPath)
+print(evaluate_path(travel_friction, target_points, megaPath))
 
 
 

@@ -11,7 +11,6 @@ class Node():
         self.h = 0
         self.f = 0
         self.cost = cost
-        self.on_list = False
 
     def __eq__(self, other):
         return self.position == other.position
@@ -31,11 +30,9 @@ def astar(maze, start, end):
 
     # Add the start node
     open_list.append(start_node)
-    num_it = 0
     # Loop until you find the end
     while len(open_list) > 0:
         #sleep(0.2)
-        num_it+=1
         # Get the current node
         current_node = open_list[0]
         current_index = 0
