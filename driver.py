@@ -19,6 +19,8 @@ target_seed = int(input())
 travel_friction, target_points = get_traffic_map_and_targets(n, noise_seed, target_seed, scale_factor=5)
 disp_img = travel_friction.copy()
 
+display_img(disp_img)
+
 target_xs = []
 target_ys = []
 for i in range(len(target_points)):
@@ -41,6 +43,7 @@ for i in range(len(target_xs)):
 # tsp.plotTSP([order], points)
 sa = SimAnnealing.SimAnneal(points, stopping_iter=5000)
 sa.anneal()
+sa.visualize_routes()
 order = sa.best_solution
 
 megaPath = []
@@ -54,7 +57,7 @@ for i in range(len(target_xs) - 1):
     #print("\n!_!_!_!_!_!")
     path, cost = astar.astar(travel_friction, start, end)
     megaPath += path
-    totalCost = cost
+    totalCost += cost
 print(megaPath)
 red = makeRed(travel_friction)
 # display_img(red)

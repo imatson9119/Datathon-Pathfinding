@@ -48,7 +48,7 @@ def astar(maze, start, end):
 
         # Pop current off open list, add to closed list
         #closed_list.append(current_node)
-        #print(num_it, current_node.position, current_node.on_list, current_node.g)
+        #print(current_node.position, current_node.g)
         #current_node.on_list = True
         closedDict[current_node.position] = 0
         # print(current_node.h)
